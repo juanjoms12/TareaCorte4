@@ -7,17 +7,23 @@ import { authService } from '@/features/auth/services/auth.service';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { useSessionStore } from '@/shared/store/session.store';
+import { toggleThemeAction } from '@/shared/actions/theme';
 
 const LINKS = [
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/exercises', label: 'Ejercicios' },
 ];
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default function AppLayout({
+    children,
+    modal,
+}: {
+    children: React.ReactNode;
+    modal: React.ReactNode;
+}) {
     const pathname = usePathname();
     const router = useRouter();
 
-    // Restaurar la sesión de localStorage una sola vez al montar el layout
     useEffect(() => {
         useSessionStore.persist.rehydrate();
     }, []);
@@ -46,6 +52,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     <div className="flex items-center gap-3">
                         <NotificationBell />
 
+                        <form action={toggleThemeAction}>
+                            <button
+                                type="submit"
+                                className="btn btn-ghost btn-sm"
+                            >
+                                Cambiar tema
+                            </button>
+                        </form>
+
                         <button
                             type="button"
                             onClick={handleLogout}
@@ -56,7 +71,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     </div>
                 </header>
 
-                <main className="max-w-4xl mx-auto p-6">{children}</main>
+                <main className="max-w-4xl mx-auto p-6">
+                    {children}
+                </main>
+
+                {modal}
             </div>
         </AuthGuard>
     );
