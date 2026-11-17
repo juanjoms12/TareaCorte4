@@ -1,8 +1,21 @@
-import { getExercises, type ExerciseFilters } from '../services/exercises.service';
+import {
+    getExercises,
+    type ExerciseFilters,
+} from '../services/exercises.service';
+
 import { ExerciseCard } from './ExerciseCard';
 
-export async function ExerciseGrid({ q, category }: ExerciseFilters) {
-    const exercises = await getExercises({ q, category });
+export async function ExerciseGrid({
+    q,
+    category,
+    duration,
+}: ExerciseFilters) {
+
+    const exercises = await getExercises({
+        q,
+        category,
+        duration,
+    });
 
     if (exercises.length === 0) {
         return (
@@ -14,11 +27,16 @@ export async function ExerciseGrid({ q, category }: ExerciseFilters) {
 
     return (
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
             {exercises.map((exercise, index) => (
                 <li key={exercise.id}>
-                    <ExerciseCard exercise={exercise} priority={index < 3} />
+                    <ExerciseCard
+                        exercise={exercise}
+                        priority={index < 3}
+                    />
                 </li>
             ))}
+
         </ul>
     );
 }
